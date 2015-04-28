@@ -16,7 +16,7 @@ For BaseX, the properties file does not have to be changed, except for changes i
 The multilevel business process environment requires SCXML-XQ, an XQuery-based SCXML interpreter, as execution engine as well as the MBAse (read: m-base) XQuery module for the management of multilevel business artifacts.
 The multilevel business artifact (MBA) [1,2] allows for the artifact-centric management of multilevel business processes, it is what the process environment uses to feed the execution engine with.
 
-Both SCXML-XQ and MBAse are available on GitHub.
+Both SCXML-XQ [3] and MBAse [4] are available on GitHub.
 
 ###3.) Start the XML database management system in server mode
 The process environment will access the XML database as a server.
@@ -38,3 +38,7 @@ http://link.springer.com/chapter/10.1007%2F978-3-642-36285-9_35
 [2] Christoph Schütz and Michael Schrefl:
 Variability in Artifact-Centric Process Modeling: The Hetero-Homogeneous Approach.
 http://crpit.com/confpapers/CRPITV154Schutz.pdf
+
+[3] SCXML-XQ: https://github.com/xtoph85/SCXML-XQ
+
+[4] MBAse: https://github.com/xtoph85/MBAse
