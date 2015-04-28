@@ -28,6 +28,11 @@ For BaseX see:
     
 http://docs.basex.org/wiki/Startup#Server
 
+###4.) Resolve dependencies
+The multilevel business process environment requires several third-party libraries.
+We recommend using maven to resolve dependencies.
+A pom.xml file is provided in the root of the project.
+
 ##Startup
 
 ##Examples
