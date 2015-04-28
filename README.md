@@ -30,9 +30,9 @@ http://docs.basex.org/wiki/Startup#Server
 
 ##References
 [1] Christoph Schütz, Lois M. L. Delcambre and Michael Schrefl:
-Multilevel Business Artifacts
+Multilevel Business Artifacts.
 http://link.springer.com/chapter/10.1007%2F978-3-642-36285-9_35
 
 [2] Christoph Schütz and Michael Schrefl:
-Variability in Artifact-Centric Process Modeling: The Hetero-Homogeneous Approach
+Variability in Artifact-Centric Process Modeling: The Hetero-Homogeneous Approach.
 http://crpit.com/confpapers/CRPITV154Schutz.pdf
