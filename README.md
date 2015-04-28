@@ -17,6 +17,8 @@ The multilevel business process environment requires SCXML-XQ, an XQuery-based S
 The multilevel business artifact (MBA) [1,2] allows for the artifact-centric management of multilevel business processes, it is what the process environment uses to feed the execution engine with.
 
 Both SCXML-XQ [3] and MBAse [4] are available on GitHub.
+The XQuery modules of these projects must be installed on the XML database management system using the provided .bxs scripts.
+Note that you should first install SCXML-XQ before installing MBAse because MBAse provides a customized SCXML-extension module.
 
 ###3.) Start the XML database management system in server mode
 The process environment will access the XML database as a server.
