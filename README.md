@@ -14,7 +14,7 @@ For BaseX, the properties file does not have to be changed, except for changes i
 
 ###2.) Install required XQuery modules
 The multilevel business process environment requires the MBAse (read: m-base) module for the management of multilevel business artifacts.
-The multilevel business artifact (MBA) [@schuetz2012a, @schuetz2014a] allows for the artifact-centric management of multilevel business processes.
+The multilevel business artifact (MBA) [1,2] allows for the artifact-centric management of multilevel business processes.
 
 ###3.) Start the XML database management system in server mode
 The process environment will access the XML database as a server.
@@ -29,10 +29,10 @@ http://docs.basex.org/wiki/Startup#Server
 ##Examples
 
 ##References
-@schuetz2012a: Christoph Schütz, Lois M. L. Delcambre and Michael Schrefl:
+[1] Christoph Schütz, Lois M. L. Delcambre and Michael Schrefl:
 Multilevel Business Artifacts
 http://link.springer.com/chapter/10.1007%2F978-3-642-36285-9_35
 
-@schuetz2014a: Christoph Schütz and Michael Schrefl:
+[2] Christoph Schütz and Michael Schrefl:
 Variability in Artifact-Centric Process Modeling: The Hetero-Homogeneous Approach
 http://crpit.com/confpapers/CRPITV154Schutz.pdf
