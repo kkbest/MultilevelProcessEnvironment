@@ -18,7 +18,7 @@ You don't actually need to create a database to run the examples/test cases.
     
 For BaseX see: 
     
-http://docs.basex.org/wiki/Startup#Client.2FServer
+http://docs.basex.org/wiki/Startup#Server
 
 ##Startup
 
