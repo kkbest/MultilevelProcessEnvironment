@@ -15,6 +15,7 @@ For BaseX, the properties file does not have to be changed, except for changes i
 ###2.) Start the XML database management system in server mode
 The process environment will access the XML database as a server.
 You don't actually need to create a database to run the examples/test cases.
+Simply start the XML database management system in server mode and let the environment do the rest.
     
 For BaseX see: 
     
