@@ -18,3 +18,4 @@ http://docs.basex.org/wiki/Startup#Client.2FServer
     
 http://docs.basex.org/wiki/Database_Server#Startup
 
+##Examples
