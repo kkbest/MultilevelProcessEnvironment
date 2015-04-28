@@ -5,8 +5,8 @@ A multilevel business process environment written in Java and XQuery.
 The multilevel business process environment works in conjunction with an XML database management system.
 
 1.) Download and install an XML database management system
-    
-    We recommend BaseX: http://basex.org/
+
+We recommend BaseX: http://basex.org/
 
 2.) Start the XML database in server mode. 
 The process environment will access the XML database as a server.
