@@ -12,10 +12,13 @@ In theory, other database management systems with an XQJ driver should work as w
 Note, however, that the use of another system requires a change in the xqj.properties file as well as the inclusion of the driver implementation in the classpath.
 For BaseX, the properties file does not have to be changed, except for changes in the server address (default: localhost), username (default: admin) or password (default: admin).
 
-###2.) Start the XML database management system in server mode
+###2.) Install required XQuery modules
+The multilevel business process environment requires the MBAse (read: m-base) module for the management of multilevel business artifacts.
+The multilevel business artifact (MBA) [1,2] allows for the artifact-centric management of multilevel business processes.
+
+###3.) Start the XML database management system in server mode
 The process environment will access the XML database as a server.
 You don't actually need to create a database to run the examples/test cases.
-Simply start the XML database management system in server mode and let the environment do the rest.
     
 For BaseX see: 
     
@@ -24,3 +27,8 @@ http://docs.basex.org/wiki/Startup#Server
 ##Startup
 
 ##Examples
+
+##References
+[1] 
+
+[2]
