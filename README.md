@@ -8,6 +8,9 @@ The multilevel business process environment works in conjunction with an XML dat
 
 We recommend BaseX: http://basex.org/
 
+In theory, other database management systems with an XQJ driver should work as well. 
+Note, however, that the use of another system requires a change in the xqj.properties file as well as the inclusion of the driver implementation in the classpath.
+
 ###2.) Start the XML database management system in server mode
 The process environment will access the XML database as a server.
 You don't actually need to create a database to run the test cases.
