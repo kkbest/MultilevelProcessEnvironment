@@ -130,10 +130,10 @@
          <sc:scxml name="SocialAndEconomicSciencesSchool">
            <sc:datamodel>
              <sc:data id="offeredDegrees">
-               <degree xmlns="" name="BSc"/>
-               <degree xmlns="" name="MSc"/>
-               <degree xmlns="" name="Mag."/>
-               <degree xmlns="" name="Dr."/>
+               <degree xmlns="">BSc</degree>
+               <degree xmlns="">MSc</degree>
+               <degree xmlns="">Mag.</degree>
+               <degree xmlns="">Dr.</degree>
              </sc:data>
            </sc:datamodel>
            <sc:initial>
@@ -280,11 +280,11 @@
                  <sc:transition target="Developing"/>
                </sc:initial>
                <sc:state id="Developing">
-                 <sc:transition event="setDegree" cond="$_ancestorAtLevelSatisfies('school', '$offeredDegrees = ' || $_event/data/text())">
-                   <sc:assign location="$degree" expr="$_event/data/text()"/>
+                 <sc:transition event="setDegree" cond="$_ancestorAtLevelSatisfies('school', '$offeredDegrees/* = &quot;' || $_event/data/degree || '&quot;')">
+                   <sc:assign location="$degree" expr="$_event/data/degree/text()"/>
                  </sc:transition>
                  <sc:transition event="addCourse">
-                   <sync:newDescendant name="$_event/data/name" level="course" parents="$_event/data/parents/parent/text()"/>
+                   <sync:newDescendant name="$_event/data/name" level="course" parents="$_event/data/mod/text()"/>
                  </sc:transition>
                  <sc:transition event="done" target="Active"/>
                  <sc:transition event="setMaxDuration">

@@ -6,6 +6,7 @@ import at.jku.dke.mba.environment.MultilevelBusinessArtifact;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,29 +39,121 @@ public class EnvironmentTest {
   }
   
   @Test
-  public void testSendEventsAndProcess() {
+  @Ignore
+  public void testGuard() {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
+    MultilevelBusinessArtifact mba = 
+        new MultilevelBusinessArtifact(dbName, 
+                                       collectionName,
+                                       "InformationSystems");
     
-    {
-      MultilevelBusinessArtifact mba = 
-          new MultilevelBusinessArtifact(dbName, 
-                                         collectionName,
-                                         "InformationSystems");
-      
-      dao.enqueueExternalEvent(mba, 
-            "<event name=\"addModule\" xmlns=\"\">"
-          + " <name xmlns=\"\">BusinessIntelligence</name>"
-          + "</event>"
-      );
-    }
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"setDegree\" xmlns=\"\">"
+        + " <degree xmlns=\"\">MA</degree>"
+        + "</event>"
+    );
     
-    MultilevelBusinessArtifact[] updatedMbas = 
-        dao.getUpdatedMultilevelBusinessArtifacts(dbName, collectionName);
-      
-    for (MultilevelBusinessArtifact mba : updatedMbas) {
-      logger.info("Conducting microstep for " + mba.getName() + ".");
-      dao.macrostep(mba);
-    }
+    dao.macrostep(mba);
+    
+    // TODO assert
+  }
+  
+  @Test
+  @Ignore
+  public void testAssign() {
+    String dbName = "myMBAse";
+    String collectionName = "JohannesKeplerUniversity";
+    MultilevelBusinessArtifact mba = 
+        new MultilevelBusinessArtifact(dbName, 
+                                       collectionName,
+                                       "InformationSystems");
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"setDegree\" xmlns=\"\">"
+        + " <degree xmlns=\"\">MSc</degree>"
+        + "</event>"
+    );
+    
+    dao.macrostep(mba);
+    
+    // TODO assert
+  }
+  
+  @Test
+  @Ignore
+  public void testTransition() {
+    String dbName = "myMBAse";
+    String collectionName = "JohannesKeplerUniversity";
+    MultilevelBusinessArtifact mba = 
+        new MultilevelBusinessArtifact(dbName, 
+                                       collectionName,
+                                       "InformationSystems");
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"done\" xmlns=\"\"/>"
+    );
+    
+    dao.macrostep(mba);
+    
+    // TODO assert
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"discontinue\" xmlns=\"\"/>"
+    );
+    
+    dao.macrostep(mba);
+    
+    // TODO assert
+  }
+  
+  @Test
+  @Ignore
+  public void testNewDescendant() {
+    String dbName = "myMBAse";
+    String collectionName = "JohannesKeplerUniversity";
+    MultilevelBusinessArtifact mba = 
+        new MultilevelBusinessArtifact(dbName, 
+                                       collectionName,
+                                       "JohannesKeplerUniversity");
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"addSchool\" xmlns=\"\">"
+        + " <name xmlns=\"\">Medical</name>"
+        + "</event>"
+    );
+    
+    dao.macrostep(mba);
+    
+    // TODO assert
+  }
+  
+  @Test
+  public void testNewDescendantUnder() {
+    String dbName = "myMBAse";
+    String collectionName = "JohannesKeplerUniversity";
+    MultilevelBusinessArtifact mba = 
+        new MultilevelBusinessArtifact(dbName, 
+                                       collectionName,
+                                       "InformationSystems");
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"addModule\" xmlns=\"\">"
+        + " <name xmlns=\"\">BusinessIntelligence</name>"
+        + "</event>"
+    );
+    
+    dao.macrostep(mba);
+    
+    // TODO assert
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"addCourse\" xmlns=\"\">"
+        + " <name xmlns=\"\">DataWarehousing</name>"
+        + " <mod xmlns=\"\">BusinessIntelligence</mod>"
+        + "</event>"
+    );
+    
+    dao.macrostep(mba);
   }
 }
