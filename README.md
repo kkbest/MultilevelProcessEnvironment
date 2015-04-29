@@ -43,6 +43,14 @@ The execution engine resolves any actions that need to be taken and updates the 
 
 ##Examples
 
+###src/main/resources/xqj.properties
+
+###src/main/resources/environment.properties
+
+###src/main/resources/quartz.properties
+
+###src/main/resources/log4j.properties
+
 ##References
 [1] Christoph Schütz, Lois M. L. Delcambre and Michael Schrefl:
 Multilevel Business Artifacts.
