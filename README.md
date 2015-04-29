@@ -44,7 +44,7 @@ The execution engine resolves any actions that need to be taken and updates the 
 ##Examples
 
 ###src/main/resources/xqj.properties
-The xqj.properties file has the following properties:
+The xqj.properties file holds the parameters for the database connection and has the following properties:
 
 - className: The name of the concrete class that implements the abstract XQJ data source class. Default class is the BaseX data source.
 - serverName: The address/name of the server that hosts the XML database. Default is localhost.
@@ -53,10 +53,18 @@ The xqj.properties file has the following properties:
 - password: The corresponding password. Default is admin (BaseX default).
 
 ###src/main/resources/environment.properties
+The environment.properties file stores the name of the MBAse and collections therein and sets the interval for update checking.
+The file has the following properties:
+- database: The name of the MBA database the collections of which are observed by the environment and checked for updates.
+- collections: A comma-separated list of names of collections in the MBAse as defined by the database property.
+- repeatFrequency: The length of the interval in seconds between checks for updates and execution of transitions. Default is 15 (seconds).
 
 ###src/main/resources/quartz.properties
 
+
 ###src/main/resources/log4j.properties
+Use this to tweak log4j output.
+If you want to store logs in a separate file, this is the point to configure it.
 
 ##References
 [1] Christoph Schütz, Lois M. L. Delcambre and Michael Schrefl:
