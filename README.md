@@ -31,9 +31,15 @@ http://docs.basex.org/wiki/Startup#Server
 ###4.) Resolve dependencies
 The multilevel business process environment requires several third-party libraries.
 We recommend using maven to resolve dependencies.
-A pom.xml file is provided in the root of the project.
+A pom.xml file is provided in the root directory of the repository.
+
+##Configuration
 
 ##Startup
+The main class is at.jku.dke.mba.environment.Environment, which must be started in order to get the multilevel business process environment running.
+
+The multilevel process environment checks, in a configurable interval, which MBAs in the MBA database have been altered and calls the execution engine.
+The execution engine resolves any actions that need to be taken and updates the MBA accordingly.
 
 ##Examples
 
