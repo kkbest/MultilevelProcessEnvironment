@@ -34,14 +34,8 @@ We recommend using maven to resolve dependencies.
 A pom.xml file is provided in the root directory of the repository.
 
 ##Configuration
-
-##Startup
-The main class is at.jku.dke.mba.environment.Environment, which must be started in order to get the multilevel business process environment running.
-
-The multilevel process environment checks, in a configurable interval, which MBAs in the MBA database have been altered and calls the execution engine.
-The execution engine resolves any actions that need to be taken and updates the MBA accordingly.
-
-##Examples
+In the MultilevelProcessEnvironment directory of this repository, there are several properties file that govern the behavior of the environment.
+Change the default values to adapt the environment to your specific needs.
 
 ###src/main/resources/xqj.properties
 The xqj.properties file holds the parameters for the database connection and has the following properties:
@@ -65,6 +59,14 @@ The file has the following properties:
 ###src/main/resources/log4j.properties
 Use this to tweak log4j output.
 If you want to store logs in a separate file, this is the point to configure it.
+
+##Startup
+The main class is at.jku.dke.mba.environment.Environment, which must be started in order to get the multilevel business process environment running.
+
+The multilevel process environment checks, in a configurable interval, which MBAs in the MBA database have been altered and calls the execution engine.
+The execution engine resolves any actions that need to be taken and updates the MBA accordingly.
+
+##Examples
 
 ##References
 [1] Christoph Schütz, Lois M. L. Delcambre and Michael Schrefl:
