@@ -54,7 +54,8 @@ The file has the following properties:
 - repeatFrequency: The length of the interval in seconds between checks for updates and execution of transitions. Default is 15 (seconds).
 
 ###src/main/resources/quartz.properties
-
+Normally, these properties shouldn't be changed at all.
+Proceed with caution!
 
 ###src/main/resources/log4j.properties
 Use this to tweak log4j output.
