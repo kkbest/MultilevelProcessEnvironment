@@ -44,6 +44,13 @@ The execution engine resolves any actions that need to be taken and updates the 
 ##Examples
 
 ###src/main/resources/xqj.properties
+The xqj.properties file has the following properties:
+
+- className: The name of the concrete class that implements the abstract XQJ data source class. Default class is the BaseX data source.
+- serverName: The address/name of the server that hosts the XML database. Default is localhost.
+- port: The port of the XML database. Default is 1984 (BaseX default).
+- user: The name of the user that connects with the database. Default is admin (BaseX default).
+- password: The corresponding password. Default is admin (BaseX default).
 
 ###src/main/resources/environment.properties
 
