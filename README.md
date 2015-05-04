@@ -69,6 +69,7 @@ The multilevel process environment checks, in a configurable interval, which MBA
 The execution engine resolves any actions that need to be taken and updates the MBA accordingly.
 
 ##Examples
+The src/test directory contains a JUnit test suite and example XML file.
 
 ##References
 [1] Christoph Schütz, Lois M. L. Delcambre and Michael Schrefl:
