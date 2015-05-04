@@ -27,7 +27,7 @@
          <sc:initial>
            <sc:transition target="Existing"/>
          </sc:initial>
-         <sc:state id="Developing">
+         <sc:state id="Existing">
            <sc:transition event="addDegree" cond="not $offeredDegrees/degree[name=$_event/data/text()]">
              <sc:assign location="$offeredDegrees" expr="&lt;degree name='&#123;$_event/data/text()&#125;'/&gt;" type="lastchild"/>
            </sc:transition>

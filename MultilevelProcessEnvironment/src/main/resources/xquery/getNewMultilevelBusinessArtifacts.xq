@@ -6,5 +6,5 @@ declare variable $collectionName external;
 let $document := db:open($dbName, 'collections.xml')
 let $collectionEntry := $document/mba:collections/mba:collection[@name = $collectionName]
 
-for $entry in $collectionEntry/mba:updated/mba:mba
+for $entry in $collectionEntry/mba:new/mba:mba
   return mba:getMBA($dbName, $collectionName, $entry/@ref)

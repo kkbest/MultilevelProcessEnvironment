@@ -17,7 +17,9 @@ let $configuration := mba:getConfiguration($mba)
 let $dataModels := sc:selectDataModels($configuration)
 
 let $transitions := 
-  sc:selectTransitions($configuration, $dataModels, $eventName)
+  if($eventName) then
+    sc:selectTransitions($configuration, $dataModels, $eventName)
+  else ()
 
 let $exitSet  := sc:computeExitSet($configuration, $transitions)
 let $entrySet := sc:computeEntrySet($transitions)

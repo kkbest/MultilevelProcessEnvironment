@@ -97,8 +97,6 @@ public class DataAccessObject {
    */
   public MultilevelBusinessArtifact[] getUpdatedMultilevelBusinessArtifacts(String dbName,
                                                                             String collectionName) {
-    XQConnection con = this.getConnection();
-    
     List<MultilevelBusinessArtifact> returnValue = 
         new LinkedList<MultilevelBusinessArtifact>();
     
@@ -126,23 +124,49 @@ public class DataAccessObject {
     } catch (IOException e) {
       logger.error("Could not read XQuery file.", e);
     } catch (XQException e) {
-      logger.error("Could not create element() type for binding.", e);
+      logger.error("Encountered an XQuery problem.", e);
     }
     
-    try {
-      if (!con.getAutoCommit()) {
-        con.commit();
+    return returnValue.toArray(new MultilevelBusinessArtifact[returnValue.size()]);
+  }
+
+  
+  /**
+   * Returns an array of MBAs that have been newly created.
+   * @param dbName the name of the database
+   * @param collectionName the name of the collection
+   * @return an array of new MBAs
+   */
+  public MultilevelBusinessArtifact[] getNewMultilevelBusinessArtifacts(String dbName,
+                                                                        String collectionName) {
+    List<MultilevelBusinessArtifact> returnValue = 
+        new LinkedList<MultilevelBusinessArtifact>();
+    
+    try (InputStream xquery = 
+           getClass().getResourceAsStream("/xquery/getNewMultilevelBusinessArtifacts.xq")) {
+      String[] result = runXQuery(
+          new Binding[] {
+              new Binding("dbName", 
+                          dbName,
+                          getConnection().createAtomicType(XQItemType.XQBASETYPE_STRING)),
+              new Binding("collectionName", 
+                          collectionName,
+                          getConnection().createAtomicType(XQItemType.XQBASETYPE_STRING))
+          },
+          xquery
+      );
+      
+      for (String xml : result) {
+        MultilevelBusinessArtifact mba = new MultilevelBusinessArtifact(xml);
+        mba.setDatabaseName(dbName);
+        mba.setCollectionName(collectionName);
+        
+        returnValue.add(mba);
       }
+    } catch (IOException e) {
+      logger.error("Could not read XQuery file.", e);
     } catch (XQException e) {
-      logger.error("Error committing macrostep.", e);
-    } finally {
-      if (con != null) {
-        try {
-          con.close();
-        } catch (XQException e) {
-          // ignore
-        }
-      }
+      logger.error("Encountered an XQuery problem.", e);
     }
     
     return returnValue.toArray(new MultilevelBusinessArtifact[returnValue.size()]);
@@ -227,7 +251,43 @@ public class DataAccessObject {
       }
     }
   }
-
+  
+  public void initMba(MultilevelBusinessArtifact mba) {
+    XQConnection con = this.getConnection();
+    
+    try (InputStream xqueryInitMba = getClass().getResourceAsStream("/xquery/initMba.xq");
+         InputStream xqueryInitScxml = getClass().getResourceAsStream("/xquery/initScxml.xq");) {
+        
+      runXQueryUpdate(
+          mba,
+          xqueryInitMba
+      );
+      
+      runXQueryUpdate(
+          mba,
+          xqueryInitScxml
+      );
+    } catch (IOException e) {
+      logger.error("Could not read XQuery file.", e);
+    }
+    
+    try {
+      if (!con.getAutoCommit()) {
+        con.commit();
+      }
+    } catch (XQException e) {
+      logger.error("Error committing insert.", e);
+    } finally {
+      if (con != null) {
+        try {
+          con.close();
+        } catch (XQException e) {
+          // ignore
+        }
+      }
+    }
+  }
+  
   /**
    * Creates a new database with a given name.
    * @param dbName the name of the new database
@@ -236,7 +296,7 @@ public class DataAccessObject {
     XQConnection con = this.getConnection();
     
     try (InputStream xqueryInsert = getClass().getResourceAsStream("/xquery/insertAsCollection.xq");
-         InputStream xqueryInitMbas = getClass().getResourceAsStream("/xquery/initMbas.xq");) {
+         InputStream xqueryInitMbas = getClass().getResourceAsStream("/xquery/initMbasInCollection.xq");) {
       
       runXQueryUpdate(
           new Binding[] {
@@ -293,7 +353,7 @@ public class DataAccessObject {
         con.commit();
       }
     } catch (XQException e) {
-      logger.error("Error committing macrostep.", e);
+      logger.error("Error committing insert.", e);
     } finally {
       if (con != null) {
         try {

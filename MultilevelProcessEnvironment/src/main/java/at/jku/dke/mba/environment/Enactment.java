@@ -44,6 +44,14 @@ public class Enactment implements Job {
     String[] collectionNames = (String[]) data.get("collections");
     
     for (String collectionName : collectionNames) {
+      MultilevelBusinessArtifact[] newMbas = 
+          dao.getNewMultilevelBusinessArtifacts(dbName, collectionName);
+      
+      for (MultilevelBusinessArtifact mba : newMbas) {
+        logger.info("Initializing newly created MBA " + mba.getName() + ".");
+        dao.initMba(mba);
+      }
+      
       MultilevelBusinessArtifact[] updatedMbas = 
           dao.getUpdatedMultilevelBusinessArtifacts(dbName, collectionName);
       

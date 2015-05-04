@@ -15,8 +15,10 @@ let $configuration := mba:getConfiguration($mba)
 let $dataModels := sc:selectDataModels($configuration)
 
 let $transitions := 
-  sc:selectTransitions($configuration, $dataModels, $eventName)
-
+  if($eventName) then
+    sc:selectTransitions($configuration, $dataModels, $eventName)
+  else ()
+  
 let $contents :=
   for $t in $transitions
     return $t/*
