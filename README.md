@@ -6,7 +6,7 @@ The multilevel business process environment works in conjunction with an XML dat
 
 ###1.) Download and install an XML database management system
 
-We recommend BaseX: http://basex.org/
+We recommend BaseX 8.1.1: http://basex.org/
 
 In theory, other database management systems with an XQJ driver should work as well. 
 Note, however, that the use of another system requires a change in the xqj.properties file as well as the inclusion of the driver implementation in the classpath.
