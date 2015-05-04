@@ -252,6 +252,11 @@ public class DataAccessObject {
     }
   }
   
+  /**
+   * Initializes a given MBA, that is, adds the required SCXML variables
+   * for execution.
+   * @param mba the MBA to be initialized
+   */
   public void initMba(MultilevelBusinessArtifact mba) {
     XQConnection con = this.getConnection();
     
@@ -296,7 +301,8 @@ public class DataAccessObject {
     XQConnection con = this.getConnection();
     
     try (InputStream xqueryInsert = getClass().getResourceAsStream("/xquery/insertAsCollection.xq");
-         InputStream xqueryInitMbas = getClass().getResourceAsStream("/xquery/initMbasInCollection.xq");) {
+         InputStream xqueryInitMbas = 
+             getClass().getResourceAsStream("/xquery/initMbasInCollection.xq");) {
       
       runXQueryUpdate(
           new Binding[] {
