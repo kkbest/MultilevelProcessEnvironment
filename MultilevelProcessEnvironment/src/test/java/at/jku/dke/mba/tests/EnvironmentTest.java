@@ -12,7 +12,6 @@ import at.jku.dke.mba.environment.MultilevelBusinessArtifact;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +44,6 @@ public class EnvironmentTest {
   }
   
   @Test
-  @Ignore
   public void testGuard() {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
@@ -66,7 +64,6 @@ public class EnvironmentTest {
   }
   
   @Test
-  @Ignore
   public void testAssign() {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
@@ -107,7 +104,6 @@ public class EnvironmentTest {
   }
   
   @Test
-  @Ignore
   public void testTransition() {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
@@ -158,7 +154,6 @@ public class EnvironmentTest {
   }
   
   @Test
-  @Ignore
   public void testNewDescendant() {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
@@ -187,7 +182,6 @@ public class EnvironmentTest {
   }
   
   @Test
-  @Ignore
   public void testNewDescendantUnder() {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
@@ -239,7 +233,6 @@ public class EnvironmentTest {
   }
 
   @Test
-  @Ignore
   public void testEveryDescendantIsInState() {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
