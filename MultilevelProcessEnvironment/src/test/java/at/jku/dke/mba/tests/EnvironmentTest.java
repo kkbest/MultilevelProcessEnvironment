@@ -41,7 +41,7 @@ public class EnvironmentTest {
   
   @After
   public void tearDown() {
-    dao.dropDatabase("myMBAse");
+    //dao.dropDatabase("myMBAse");
   }
   
   @Test
@@ -423,6 +423,176 @@ public class EnvironmentTest {
 
   @Test
   public void testSendDescendants() {
+    String dbName = "myMBAse";
+    String collectionName = "JohannesKeplerUniversity";
+    MultilevelBusinessArtifact mba =
+        dao.getMultilevelBusinessArtifact(dbName, collectionName, "JohannesKeplerUniversity");
     
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"addSchool\" xmlns=\"\">"
+        + " <name xmlns=\"\">Medical</name>"
+        + "</event>"
+    );
+    
+    dao.macrostep(mba);
+    
+    mba =
+        new MultilevelBusinessArtifact(dbName,
+                                       collectionName,
+                                       "Medical");
+
+    dao.initMba(mba);
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"addProgram\" xmlns=\"\">"
+        + " <name xmlns=\"\">HumanMedicine</name>"
+        + "</event>"
+    );
+    
+    dao.macrostep(mba);
+    
+    mba =
+        new MultilevelBusinessArtifact(dbName,
+                                       collectionName,
+                                       "HumanMedicine");
+    
+    dao.initMba(mba);
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"addCourse\" xmlns=\"\">"
+        + " <name xmlns=\"\">Anatomy</name>"
+        + "</event>"
+    );
+    
+    dao.macrostep(mba);
+    
+    mba =
+        new MultilevelBusinessArtifact(dbName,
+                                       collectionName,
+                                       "Anatomy");
+
+    dao.initMba(mba);
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"offer\" xmlns=\"\"/>"
+    );
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"addCourseInstance\" xmlns=\"\">"
+        + " <name xmlns=\"\">AnatomySummer2015</name>"
+        + "</event>"
+    );
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"addCourseInstance\" xmlns=\"\">"
+        + " <name xmlns=\"\">AnatomyWinter2015</name>"
+        + "</event>"
+    );
+    
+    dao.macrostep(mba);
+    dao.macrostep(mba);
+    dao.macrostep(mba);
+    
+    mba =
+        new MultilevelBusinessArtifact(dbName,
+                                       collectionName,
+                                       "AnatomySummer2015");
+
+    dao.initMba(mba);
+    
+    mba =
+        new MultilevelBusinessArtifact(dbName,
+                                       collectionName,
+                                       "AnatomyWinter2015");
+
+    dao.initMba(mba);
+    
+    
+    mba =
+        new MultilevelBusinessArtifact(dbName,
+                                       collectionName,
+                                       "HumanMedicine");
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"done\" xmlns=\"\"/>"
+    );
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"discontinue\" xmlns=\"\"/>"
+    );
+    
+    dao.macrostep(mba);
+    dao.macrostep(mba);
+    
+    mba =
+        new MultilevelBusinessArtifact(dbName,
+                                       collectionName,
+                                       "AnatomySummer2015");
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"start\" xmlns=\"\"/>"
+    );
+
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"finish\" xmlns=\"\"/>"
+    );
+    
+    dao.macrostep(mba);
+    dao.macrostep(mba);
+    
+    mba =
+        new MultilevelBusinessArtifact(dbName,
+                                       collectionName,
+                                       "HumanMedicine");
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"discontinue\" xmlns=\"\"/>"
+    );
+    
+    dao.macrostep(mba);
+    
+    mba =
+        new MultilevelBusinessArtifact(dbName,
+                                       collectionName,
+                                       "AnatomyWinter2015");
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"start\" xmlns=\"\"/>"
+    );
+
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"finish\" xmlns=\"\"/>"
+    );
+    
+    dao.macrostep(mba);
+    dao.macrostep(mba);
+    
+    mba =
+        new MultilevelBusinessArtifact(dbName,
+                                       collectionName,
+                                       "HumanMedicine");
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"discontinue\" xmlns=\"\"/>"
+    );
+    
+    dao.macrostep(mba);
+    
+    mba = dao.getMultilevelBusinessArtifact(dbName,
+                                            collectionName,
+                                            "Anatomy");
+
+    dao.macrostep(mba);
+    dao.macrostep(mba);
+    
+    mba = dao.getMultilevelBusinessArtifact(dbName,
+                                            collectionName,
+                                            "Anatomy");
+
+    assertFalse(mba.isInState("Planning"));
+    assertFalse(mba.isInState("Available"));
+    assertTrue(mba.isInState("Unavailable"));
   }
 }

@@ -52,8 +52,8 @@
              <sc:transition target="Developing"/>
            </sc:initial>
            <sc:state id="Developing">
-             <sc:transition event="setDegree" cond="$_ancestorAtLevelSatisfies('school', '$offeredDegrees = ' || $_event/data/text())">
-               <assign location="$degree" expr="$_event/data/text()"/>
+                 <sc:transition event="setDegree" cond="$_ancestorAtLevelSatisfies('school', '$offeredDegrees/* = &quot;' || $_event/data/degree || '&quot;')">
+                   <sc:assign location="$degree" expr="$_event/data/degree/text()"/>
              </sc:transition>
              <sc:transition event="addCourse">
                <sync:newDescendant name="$_event/data/name" level="course"/>
@@ -168,8 +168,8 @@
                <sc:transition target="Developing"/>
              </sc:initial>
              <sc:state id="Developing">
-               <sc:transition event="setDegree" cond="$_ancestorAtLevelSatisfies('school', '$offeredDegrees = ' || $_event/data/text())">
-                 <sc:assign location="$degree" expr="$_event/data/text()"/>
+                 <sc:transition event="setDegree" cond="$_ancestorAtLevelSatisfies('school', '$offeredDegrees/* = &quot;' || $_event/data/degree || '&quot;')">
+                   <sc:assign location="$degree" expr="$_event/data/degree/text()"/>
                </sc:transition>
                <sc:transition event="addCourse">
                  <sync:newDescendant name="$_event/data/name" level="course"/>
