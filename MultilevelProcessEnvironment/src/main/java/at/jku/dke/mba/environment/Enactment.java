@@ -18,9 +18,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  
- * Custom SCXML interpreter extension that defines multilevel predicates
- * for the use in dynamically evaluated SCXML expressions.
  */
 
 package at.jku.dke.mba.environment;
@@ -29,6 +26,7 @@ import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +58,8 @@ public class Enactment implements Job {
         dao.macrostep(mba);
       }
     }
+    
+    dao.close();
   }
 
 }

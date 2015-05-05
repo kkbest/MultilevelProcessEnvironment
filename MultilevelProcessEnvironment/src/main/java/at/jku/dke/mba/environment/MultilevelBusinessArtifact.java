@@ -18,9 +18,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  
- * Custom SCXML interpreter extension that defines multilevel predicates
- * for the use in dynamically evaluated SCXML expressions.
  */
 
 package at.jku.dke.mba.environment;
@@ -33,57 +30,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MultilevelBusinessArtifact {  
+public class MultilevelBusinessArtifact { 
   private final Logger logger = LoggerFactory.getLogger(MultilevelBusinessArtifact.class);
   
   private String name = null;
   private String collectionName = null;
   private String databaseName = null;
   
-  private Map<String,String> datamodel = new HashMap<String,String>();
-  
+  private List<String> currentStatus = new ArrayList<String>();
+  private List<String> datamodel = new ArrayList<String>();
+  private List<String> concretizations = new ArrayList<String>();
   
   /**
-   * Takes an XML representation of an MBA as argument, the resulting
-   * instance contains the contents of the XML representation.
+   * Takes names of database, collection and MBA and returns an instance
+   * that represents an MBA in the database.
+   * <p/>
+   * This constructor takes the minimum information required for a sensible
+   * representation of an MBA.
    */
   public MultilevelBusinessArtifact(String database, String collection, String name) {
     this.databaseName = database;
     this.collectionName = collection;
     this.name = name;
-  }
-  
-  /**
-   * Takes an XML representation of an MBA as argument.
-   * Does not set collection and database.
-   * @param xml the xml representation of the MBA
-   */
-  public MultilevelBusinessArtifact(String xml) {
-    Context context = new Context();
-    
-    String query = 
-        "declare variable $mba external;\n"
-        + "fn:string($mba/@name)\n";
-      
-    try (QueryProcessor proc = new QueryProcessor(query, context)) {
-      proc.bind("mba", xml, "element()");
-      
-      Result queryResult = proc.execute();
-      
-      this.name = queryResult.serialize();
-    } catch (QueryException e) {
-      logger.error("Could not retrieve name of MBA.", e);
-    } catch (IOException e) {
-      logger.error("Could not query.", e);
-      e.printStackTrace();
-    } finally {
-      if (context != null) {
-        context.close();
-      }
-    }
   }
   
   public String getName() {
@@ -106,11 +77,85 @@ public class MultilevelBusinessArtifact {
     this.databaseName = databaseName;
   }
   
-  public String getData(String id) {
-    return this.datamodel.get(id);
+  /**
+   * Adds a data element to the data model.
+   */
+  public void addData(String dataElement) {
+    if (!this.datamodel.contains(dataElement)) {
+      this.datamodel.add(dataElement);
+    }
   }
   
-  public void setData(String id, String value) {
-    this.datamodel.put(id, value);
+  /**
+   * Returns the contents of the data element with the given id.
+   * @param id the id of the data element
+   * @return the contents of the given data element
+   */
+  public String getDataContents(String id) {
+    String result = null;
+    
+    Context context = new Context();
+    
+    String query = 
+          "declare variable $data external;\n" 
+        + "declare variable $id external;\n"
+        + "if (fn:string($data/@id) = $id) then $data/node() else ()\n";
+    
+    try (QueryProcessor proc = new QueryProcessor(query, context)) {
+      for (String data : this.datamodel) {
+        proc.bind("data", data, "element()");
+        proc.bind("id", id, "xs:string");
+        
+        Result queryResult = proc.execute();
+        
+        if (queryResult.size() > 0) {
+          result = queryResult.serialize();
+          break;
+        }
+      }
+    } catch (QueryException e) {
+      logger.error("Could not retrieve name of MBA.", e);
+    } catch (IOException e) {
+      logger.error("Could not query.", e);
+      e.printStackTrace();
+    } finally {
+      if (context != null) {
+        context.close();
+      }
+    }
+    
+    return result;
+  }
+  
+  /**
+   * Adds a state to the MBA's list of active states.
+   * @param stateId the id of the state
+   */
+  public void addCurrentState(String stateId) {
+    if (!this.currentStatus.contains(stateId)) {
+      this.currentStatus.add(stateId);
+    }
+  }
+  
+  public void removeCurrentState(String stateId) {
+    this.currentStatus.remove(stateId);
+  }
+  
+  public boolean isInState(String stateId) {
+    return this.currentStatus.contains(stateId);
+  }
+  
+  /**
+   * Adds a concretization to the MBA.
+   * @param name the name of the concretization
+   */
+  public void addConcretization(String name) {
+    if (!this.concretizations.contains(name)) {
+      this.concretizations.add(name);
+    }
+  }
+  
+  public boolean hasConcretization(String mbaName) {
+    return this.concretizations.contains(mbaName);
   }
 }

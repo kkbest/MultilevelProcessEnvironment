@@ -1,5 +1,11 @@
 package at.jku.dke.mba.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import at.jku.dke.mba.environment.DataAccessObject;
 import at.jku.dke.mba.environment.MultilevelBusinessArtifact;
 
@@ -35,7 +41,7 @@ public class EnvironmentTest {
   
   @After
   public void tearDown() {
-    //dao.dropDatabase("myMBAse");
+    dao.dropDatabase("myMBAse");
   }
   
   @Test
@@ -44,9 +50,9 @@ public class EnvironmentTest {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
     MultilevelBusinessArtifact mba = 
-        new MultilevelBusinessArtifact(dbName, 
-                                       collectionName,
-                                       "InformationSystems");
+        dao.getMultilevelBusinessArtifact(dbName, 
+                                          collectionName,
+                                          "InformationSystems");
     
     dao.enqueueExternalEvent(mba, 
           "<event name=\"setDegree\" xmlns=\"\">"
@@ -56,7 +62,7 @@ public class EnvironmentTest {
     
     dao.macrostep(mba);
     
-    // TODO assert
+    assertNull(mba.getDataContents("degree"));
   }
   
   @Test
@@ -65,9 +71,11 @@ public class EnvironmentTest {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
     MultilevelBusinessArtifact mba = 
-        new MultilevelBusinessArtifact(dbName, 
-                                       collectionName,
-                                       "InformationSystems");
+        dao.getMultilevelBusinessArtifact(dbName, 
+                                          collectionName,
+                                          "InformationSystems");
+    
+    assertNull(mba.getDataContents("degree"));
     
     dao.enqueueExternalEvent(mba, 
           "<event name=\"setDegree\" xmlns=\"\">"
@@ -77,7 +85,25 @@ public class EnvironmentTest {
     
     dao.macrostep(mba);
     
-    // TODO assert
+    mba = dao.getMultilevelBusinessArtifact(dbName, 
+                                            collectionName,
+                                            "InformationSystems");
+        
+    assertEquals("MSc", mba.getDataContents("degree"));
+    
+    dao.enqueueExternalEvent(mba, 
+          "<event name=\"setDegree\" xmlns=\"\">"
+        + " <degree xmlns=\"\">BSc</degree>"
+        + "</event>"
+    );
+    
+    dao.macrostep(mba);
+    
+    mba = dao.getMultilevelBusinessArtifact(dbName, 
+                                            collectionName,
+                                            "InformationSystems");
+        
+    assertEquals("BSc", mba.getDataContents("degree"));
   }
   
   @Test
@@ -86,9 +112,15 @@ public class EnvironmentTest {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
     MultilevelBusinessArtifact mba = 
-        new MultilevelBusinessArtifact(dbName, 
-                                       collectionName,
-                                       "InformationSystems");
+        dao.getMultilevelBusinessArtifact(dbName, 
+                                          collectionName,
+                                          "InformationSystems");
+
+    assertTrue(mba.isInState("Developing"));
+    assertFalse(mba.isInState("Active"));
+    assertFalse(mba.isInState("Discontinued"));
+    
+    
     
     dao.enqueueExternalEvent(mba, 
           "<event name=\"done\" xmlns=\"\"/>"
@@ -96,15 +128,33 @@ public class EnvironmentTest {
     
     dao.macrostep(mba);
     
-    // TODO assert
+    
+    
+    mba = dao.getMultilevelBusinessArtifact(dbName, 
+                                            collectionName,
+                                            "InformationSystems");
+    
+    assertTrue(mba.isInState("Active"));
+    assertFalse(mba.isInState("Developing"));
+    assertFalse(mba.isInState("Discontinued"));
+    
+    
     
     dao.enqueueExternalEvent(mba, 
           "<event name=\"discontinue\" xmlns=\"\"/>"
     );
     
+    
+    
     dao.macrostep(mba);
     
-    // TODO assert
+    mba = dao.getMultilevelBusinessArtifact(dbName, 
+                                            collectionName,
+                                            "InformationSystems");
+    
+    assertTrue(mba.isInState("Discontinued"));
+    assertFalse(mba.isInState("Developing"));
+    assertFalse(mba.isInState("Active"));
   }
   
   @Test
@@ -113,9 +163,12 @@ public class EnvironmentTest {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
     MultilevelBusinessArtifact mba = 
-        new MultilevelBusinessArtifact(dbName, 
-                                       collectionName,
-                                       "JohannesKeplerUniversity");
+        dao.getMultilevelBusinessArtifact(dbName, 
+                                          collectionName,
+                                          "JohannesKeplerUniversity");
+    
+    assertNull(dao.getMultilevelBusinessArtifact(dbName, collectionName, "Medical"));
+    assertFalse(mba.hasConcretization("Medical"));
     
     dao.enqueueExternalEvent(mba, 
           "<event name=\"addSchool\" xmlns=\"\">"
@@ -125,7 +178,12 @@ public class EnvironmentTest {
     
     dao.macrostep(mba);
     
-    // TODO assert
+    mba = dao.getMultilevelBusinessArtifact(dbName, 
+                                            collectionName,
+                                            "JohannesKeplerUniversity");
+
+    assertNotNull(dao.getMultilevelBusinessArtifact(dbName, collectionName, "Medical"));
+    assertTrue(mba.hasConcretization("Medical"));
   }
   
   @Test
@@ -134,9 +192,12 @@ public class EnvironmentTest {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
     MultilevelBusinessArtifact mba = 
-        new MultilevelBusinessArtifact(dbName, 
-                                       collectionName,
-                                       "InformationSystems");
+        dao.getMultilevelBusinessArtifact(dbName, 
+                                          collectionName,
+                                          "InformationSystems");
+    
+    assertNull(dao.getMultilevelBusinessArtifact(dbName, collectionName, "BusinessIntelligence"));
+    assertFalse(mba.hasConcretization("BusinessIntelligence"));
     
     dao.enqueueExternalEvent(mba, 
           "<event name=\"addModule\" xmlns=\"\">"
@@ -146,7 +207,17 @@ public class EnvironmentTest {
     
     dao.macrostep(mba);
     
-    // TODO assert
+    mba = dao.getMultilevelBusinessArtifact(dbName, 
+                                            collectionName,
+                                            "InformationSystems");
+    
+    assertNotNull(
+        dao.getMultilevelBusinessArtifact(dbName, collectionName, "BusinessIntelligence")
+    );
+    assertTrue(mba.hasConcretization("BusinessIntelligence"));
+    
+    
+    assertNull(dao.getMultilevelBusinessArtifact(dbName, collectionName, "DataWarehousing"));
     
     dao.enqueueExternalEvent(mba, 
           "<event name=\"addCourse\" xmlns=\"\">"
@@ -156,25 +227,33 @@ public class EnvironmentTest {
     );
     
     dao.macrostep(mba);
+    
+    mba = dao.getMultilevelBusinessArtifact(dbName, 
+                                            collectionName,
+                                            "BusinessIntelligence");
+    
+    assertNotNull(
+        dao.getMultilevelBusinessArtifact(dbName, collectionName, "DataWarehousing")
+    );
+    assertTrue(mba.hasConcretization("DataWarehousing"));
   }
-  
+
   @Test
+  @Ignore
   public void testEveryDescendantIsInState() {
     String dbName = "myMBAse";
     String collectionName = "JohannesKeplerUniversity";
     MultilevelBusinessArtifact mba =
-        new MultilevelBusinessArtifact(dbName,
-                                       collectionName,
-                                       "JohannesKeplerUniversity");
+        dao.getMultilevelBusinessArtifact(dbName, collectionName, "JohannesKeplerUniversity");
     
     dao.enqueueExternalEvent(mba, 
           "<event name=\"addSchool\" xmlns=\"\">"
         + " <name xmlns=\"\">Medical</name>"
         + "</event>"
     );
-  
+    
     dao.macrostep(mba);
-  
+    
     mba =
         new MultilevelBusinessArtifact(dbName,
                                        collectionName,
@@ -263,7 +342,12 @@ public class EnvironmentTest {
     dao.macrostep(mba);
     dao.macrostep(mba);
     
-    // TODO make assertion
+    mba = dao.getMultilevelBusinessArtifact(dbName,
+                                            collectionName,
+                                            "HumanMedicine");
+    
+    assertTrue(mba.isInState("Active"));
+    assertFalse(mba.isInState("Discontinued"));
     
     mba =
         new MultilevelBusinessArtifact(dbName,
@@ -293,7 +377,12 @@ public class EnvironmentTest {
     
     dao.macrostep(mba);
     
-    // TODO make assertion
+    mba = dao.getMultilevelBusinessArtifact(dbName,
+                                            collectionName,
+                                            "HumanMedicine");
+    
+    assertTrue(mba.isInState("Active"));
+    assertFalse(mba.isInState("Discontinued"));
     
     mba =
         new MultilevelBusinessArtifact(dbName,
@@ -312,8 +401,6 @@ public class EnvironmentTest {
     dao.macrostep(mba);
     dao.macrostep(mba);
     
-    // TODO make assertion
-    
     mba =
         new MultilevelBusinessArtifact(dbName,
                                        collectionName,
@@ -325,8 +412,17 @@ public class EnvironmentTest {
     
     dao.macrostep(mba);
     
-    // TODO make assertion
+    mba = dao.getMultilevelBusinessArtifact(dbName,
+                                            collectionName,
+                                            "HumanMedicine");
     
+    assertFalse(mba.isInState("Active"));
+    assertTrue(mba.isInState("Discontinued"));
+  }
+  
+
+  @Test
+  public void testSendDescendants() {
     
   }
 }

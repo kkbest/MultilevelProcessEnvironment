@@ -18,9 +18,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  
- * Custom SCXML interpreter extension that defines multilevel predicates
- * for the use in dynamically evaluated SCXML expressions.
  */
 
 package at.jku.dke.mba.environment;
@@ -47,7 +44,7 @@ public class DataAccessObject {
   private final Logger logger = LoggerFactory.getLogger(DataAccessObject.class); 
   
   private XQConnection connection = null;
-    
+  
   private XQConnection getConnection() {    
     Properties properties = new Properties();
     
@@ -90,6 +87,17 @@ public class DataAccessObject {
   }
   
   /**
+   * Frees the resources of the database connection.
+   */
+  public void close() {
+    try {
+      this.connection.close();
+    } catch (XQException e) {
+      logger.error("Could not close connection.", e);
+    }
+  }
+  
+  /**
    * Returns an array of MBAs that have been updated.
    * @param dbName the name of the database
    * @param collectionName the name of the collection
@@ -115,9 +123,7 @@ public class DataAccessObject {
       );
       
       for (String xml : result) {
-        MultilevelBusinessArtifact mba = new MultilevelBusinessArtifact(xml);
-        mba.setDatabaseName(dbName);
-        mba.setCollectionName(collectionName);
+        MultilevelBusinessArtifact mba = this.xmlToMba(xml);
         
         returnValue.add(mba);
       }
@@ -131,6 +137,92 @@ public class DataAccessObject {
   }
 
   
+  private MultilevelBusinessArtifact xmlToMba(String xml) {
+    MultilevelBusinessArtifact returnValue = null;
+    
+    try (InputStream xqueryBaseData = 
+           getClass().getResourceAsStream(
+             "/xquery/getMultilevelBusinessArtifactBaseData.xq"
+           );
+         InputStream xqueryCurrentStatus = 
+           getClass().getResourceAsStream(
+             "/xquery/getMultilevelBusinessArtifactCurrentStatus.xq"
+           );
+        InputStream xqueryData = 
+            getClass().getResourceAsStream(
+              "/xquery/getMultilevelBusinessArtifactData.xq"
+            );
+        InputStream xqueryConcretizations = 
+            getClass().getResourceAsStream(
+              "/xquery/getMultilevelBusinessArtifactConcretizations.xq"
+            );
+        ) {
+      String[] result = runXQuery(
+          new Binding[] {
+              new Binding("mba", 
+                          xml,
+                          getConnection().createElementType(new QName("mba"),
+                              XQItemType.XQITEMKIND_ELEMENT)),
+          },
+          xqueryBaseData
+      );
+
+      String mbaName = result[0];
+      String dbName = result.length > 1 ? result[1] : null;
+      String collectionName = result.length > 2 ? result[2] : null;
+      
+      returnValue = new MultilevelBusinessArtifact(dbName, collectionName, mbaName);
+      
+      result = runXQuery(
+          new Binding[] {
+              new Binding("mba", 
+                          xml,
+                          getConnection().createElementType(new QName("mba"),
+                              XQItemType.XQITEMKIND_ELEMENT)),
+          },
+          xqueryCurrentStatus
+      );
+      
+      for (String stateId : result) {
+        returnValue.addCurrentState(stateId);
+      }
+      
+      result = runXQuery(
+          new Binding[] {
+              new Binding("mba", 
+                          xml,
+                          getConnection().createElementType(new QName("mba"),
+                              XQItemType.XQITEMKIND_ELEMENT)),
+          },
+          xqueryData
+      );
+      
+      for (String dataElement : result) {
+        returnValue.addData(dataElement);
+      }
+      
+      result = runXQuery(
+          new Binding[] {
+              new Binding("mba", 
+                          xml,
+                          getConnection().createElementType(new QName("mba"),
+                              XQItemType.XQITEMKIND_ELEMENT)),
+          },
+          xqueryConcretizations
+      );
+      
+      for (String concretization : result) {
+        returnValue.addConcretization(concretization);
+      }
+    } catch (IOException e) {
+      logger.error("Could not read XQuery file.", e);
+    } catch (XQException e) {
+      logger.error("Encountered an XQuery problem.", e);
+    }
+    
+    return returnValue;
+  }
+
   /**
    * Returns an array of MBAs that have been newly created.
    * @param dbName the name of the database
@@ -157,9 +249,7 @@ public class DataAccessObject {
       );
       
       for (String xml : result) {
-        MultilevelBusinessArtifact mba = new MultilevelBusinessArtifact(xml);
-        mba.setDatabaseName(dbName);
-        mba.setCollectionName(collectionName);
+        MultilevelBusinessArtifact mba = this.xmlToMba(xml);
         
         returnValue.add(mba);
       }
@@ -272,6 +362,8 @@ public class DataAccessObject {
           mba,
           xqueryInitScxml
       );
+      
+      removeFromInsertLog(mba);
     } catch (IOException e) {
       logger.error("Could not read XQuery file.", e);
     }
@@ -320,7 +412,7 @@ public class DataAccessObject {
       String collectionName = null;
       
       {
-        MultilevelBusinessArtifact mba = new MultilevelBusinessArtifact(xml);
+        MultilevelBusinessArtifact mba = this.xmlToMba(xml);
         collectionName = mba.getName();
         
         runXQueryUpdate(
@@ -371,6 +463,45 @@ public class DataAccessObject {
     }
   }
   
+  /**
+   * An MBA object with a given name from a database.
+   */
+  public MultilevelBusinessArtifact getMultilevelBusinessArtifact(String dbName, 
+                                                                  String collectionName,
+                                                                  String mbaName) {
+    MultilevelBusinessArtifact returnValue = null;
+
+    try (InputStream xquery = 
+           getClass().getResourceAsStream("/xquery/getMultilevelBusinessArtifact.xq")) {
+      String[] result = runXQuery(
+          new Binding[] {
+              new Binding("dbName", 
+                          dbName,
+                          getConnection().createAtomicType(XQItemType.XQBASETYPE_STRING)),
+              new Binding("collectionName", 
+                          collectionName,
+                          getConnection().createAtomicType(XQItemType.XQBASETYPE_STRING)),
+              new Binding("mbaName", 
+                          mbaName,
+                          getConnection().createAtomicType(XQItemType.XQBASETYPE_STRING))
+          },
+          xquery
+      );
+      
+      if (result.length > 0) {
+        returnValue = this.xmlToMba(result[0]);
+        returnValue.setCollectionName(collectionName);
+        returnValue.setDatabaseName(dbName);
+      }
+    } catch (IOException e) {
+      logger.error("Could not read XQuery file.", e);
+    } catch (XQException e) {
+      logger.error("Could not create element() type for binding.", e);
+    }
+    
+    return returnValue;
+  }
+  
   private MultilevelBusinessArtifact[] getMultilevelBusinessArtifacts(
       String dbName, String collectionName
   ) {
@@ -392,7 +523,7 @@ public class DataAccessObject {
       );
       
       for (String xml : result) {
-        MultilevelBusinessArtifact mba = new MultilevelBusinessArtifact(xml);
+        MultilevelBusinessArtifact mba = this.xmlToMba(xml);
         mba.setDatabaseName(dbName);
         mba.setCollectionName(collectionName);
         
@@ -489,6 +620,14 @@ public class DataAccessObject {
   
   private void removeFromUpdateLog(MultilevelBusinessArtifact mba) {
     try (InputStream xquery = getClass().getResourceAsStream("/xquery/removeFromUpdateLog.xq")) {
+      runXQueryUpdate(mba, xquery);
+    } catch (IOException e) {
+      logger.error("Could not read XQuery file.", e);
+    }
+  }
+  
+  private void removeFromInsertLog(MultilevelBusinessArtifact mba) {
+    try (InputStream xquery = getClass().getResourceAsStream("/xquery/removeFromInsertLog.xq")) {
       runXQueryUpdate(mba, xquery);
     } catch (IOException e) {
       logger.error("Could not read XQuery file.", e);

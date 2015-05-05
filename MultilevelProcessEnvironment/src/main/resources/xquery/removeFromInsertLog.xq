@@ -7,4 +7,4 @@ declare variable $mbaName external;
 
 let $mba := mba:getMBA($dbName, $collectionName, $mbaName)
 
-return mba:removeFromInsertLog($mba)
+return mba:removeFromUpdateLog($mba)
