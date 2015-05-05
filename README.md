@@ -36,6 +36,7 @@ A pom.xml file is provided in the root directory of the repository.
 ##Configuration
 In the MultilevelProcessEnvironment directory of this repository, there are several properties file that govern the behavior of the environment.
 Change the default values to adapt the environment to your specific needs.
+These properties files must be in the classpath when running the application.
 
 ###src/main/resources/xqj.properties
 The xqj.properties file holds the parameters for the database connection and has the following properties:
@@ -68,6 +69,7 @@ The multilevel process environment checks, in a configurable interval, which MBA
 The execution engine resolves any actions that need to be taken and updates the MBA accordingly.
 
 ##Examples
+The src/test directory contains a JUnit test suite and example XML file.
 
 ##References
 [1] Christoph Schütz, Lois M. L. Delcambre and Michael Schrefl:
